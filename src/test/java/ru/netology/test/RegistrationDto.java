@@ -32,7 +32,7 @@ class RegistrationDto {
 
     public static User setActiveUser() {
         String login = "Radmila Kanitonova";
-        String password = "Romashka123mot";
+        String password = "Romashka123";
         String status = "active";
         User registration = new User(login, password, status);
         postUser(registration);
