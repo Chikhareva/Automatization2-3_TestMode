@@ -29,7 +29,7 @@ public class TestModeTest {
 
     @Test
     void shouldActiveUser() {
-        RegistrationDto.setActiveUser();
+        DataGenerator.setActiveUser();
         $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
         $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
         $(byText("Продолжить")).click();
@@ -38,7 +38,7 @@ public class TestModeTest {
 
     @Test
     void shouldBlockedUser() {
-        RegistrationDto.setBlockedUser();
+        DataGenerator.setBlockedUser();
         $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
         $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
         $(byText("Продолжить")).click();
@@ -48,7 +48,7 @@ public class TestModeTest {
 
     @Test
     void shouldIncorrectPassword() {
-        RegistrationDto.setIncorrectPassword();
+        DataGenerator.setIncorrectPassword();
         $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
         $("[data-test-id=password] [class = input__control]").setValue(faker.internet().password());
         $(byText("Продолжить")).click();
@@ -58,7 +58,7 @@ public class TestModeTest {
 
     @Test
     void shouldIncorrectLogin() {
-        RegistrationDto.setIncorrectLogin();
+        DataGenerator.setIncorrectLogin();
         $("[data-test-id=login] [class = input__control]").setValue(faker.name().fullName());
         $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
         $(byText("Продолжить")).click();

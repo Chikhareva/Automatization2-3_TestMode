@@ -1,32 +1,14 @@
 package ru.netology.test;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class User  {
-
-    private String login = "Radmila Kanitonova";
-    private String password = "Romashka123";
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+    private String login;
+    private String password;
     private String status;
-
-
-    public User() {
-
-    }
-
-    public User(String login, String password, String status) {
-        this.login = login;
-        this.password = password;
-        this.status = status;
-    }
-
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
 }
