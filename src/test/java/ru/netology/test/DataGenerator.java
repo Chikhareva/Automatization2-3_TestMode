@@ -9,45 +9,42 @@ import java.util.Locale;
 import static io.restassured.RestAssured.given;
 
 public class DataGenerator {
-    private static Faker faker = new Faker(new Locale("en"));
-
     private DataGenerator() {
     }
 
-    public static RequestSpecification requestSpecification = new RequestSpecBuilder()
-            .setBaseUri("http://localhost")
-            .setPort(9999)
-            .setAccept(ContentType.JSON)
-            .setContentType(ContentType.JSON)
-            .log(LogDetail.ALL)
-            .build();
+    public static class Registration {
+        private Registration() {
+        }
 
+        public static User generateActiveUser() {
+            Faker faker = new Faker(new Locale("usa"));
+            return new User(faker.name().firstName(), faker.internet().password(), "active");
+        }
 
-    public static void setNewUser(User registration) {
-        given()
-                .spec(requestSpecification) // указываем, какую спецификацию используем
-                .body(registration) // передаём в теле объект, который будет преобразован в JSON
-                .when() // "когда"
-                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-                .then() // "тогда ожидаем"
-                .statusCode(200);
+        public static User generateBlockedUser() {
+            Faker faker = new Faker(new Locale("usa"));
+            return new User(faker.name().firstName(), faker.internet().password(), "blocked");
+        }
     }
 
+    public static class SendOnServer {
+        private static RequestSpecification requestSpec = new RequestSpecBuilder()
+                .setBaseUri("http://localhost")
+                .setPort(9999)
+                .setAccept(ContentType.JSON)
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
 
-    public static User getRegisteredUser(String status) {
-        String login = faker.name().fullName();
-        String password = faker.internet().password();
-        User registration = new User(login, password, status);
-        setNewUser(registration);
-        return registration;
+        public static void setUpAll(User user) {
+            // сам запрос
+            given() // "дано"
+                    .spec(requestSpec) // указываем, какую спецификацию используем
+                    .body(user) // передаём в теле объект, который будет преобразован в JSON
+                    .when() // "когда"
+                    .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
+                    .then() // "тогда ожидаем"
+                    .statusCode(200); // код 200 OK
+        }
     }
-
-    public static String getNewLogin(){
-        return faker.name().fullName();
-    }
-
-    public static String getNewPassword(){
-        return faker.internet().password();
-    }
-
 }

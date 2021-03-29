@@ -23,46 +23,45 @@ public class TestModeTest {
         open("http://localhost:9999");
         faker = new Faker(new Locale("eng"));
         user = new User();
-
-    }
-
-
-    @Test
-    void shouldActiveUser() {
-        DataGenerator.setActiveUser();
-        $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
-        $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
-        $(byText("Продолжить")).click();
-        $(withText("Личный кабинет")).shouldBe(Condition.visible, Duration.ofSeconds(15));
     }
 
     @Test
-    void shouldBlockedUser() {
-        DataGenerator.setBlockedUser();
-        $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
-        $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
-        $(byText("Продолжить")).click();
-        $(withText("Ошибка")).shouldBe(Condition.visible, Duration.ofSeconds(5));
-
+    void shouldLoginActiveUser() {
+        User dataOrderCard= DataGenerator.Registration.generateActiveUser();
+        DataGenerator.SendOnServer.setUpAll(dataOrderCard);
+        $("[name=login]").setValue(dataOrderCard.getLogin());
+        $("[name=password]").setValue(dataOrderCard.getPassword());
+        $("[data-test-id=action-login]").click();
+        $(withText("Личный кабинет")).shouldBe(Condition.visible);
     }
 
     @Test
-    void shouldIncorrectPassword() {
-        DataGenerator.setIncorrectPassword();
-        $("[data-test-id=login] [class = input__control]").setValue(user.getLogin());
-        $("[data-test-id=password] [class = input__control]").setValue(faker.internet().password());
-        $(byText("Продолжить")).click();
-        $(withText("Ошибка")).shouldBe(Condition.visible, Duration.ofSeconds(5));
-
+    void shouldLoginBlockedUser() {
+        User dataOrderCard= DataGenerator.Registration.generateBlockedUser();
+        DataGenerator.SendOnServer.setUpAll(dataOrderCard);
+        $("[name=login]").setValue(dataOrderCard.getLogin());
+        $("[name=password]").setValue(dataOrderCard.getPassword());
+        $("[data-test-id=action-login]").click();
+        $(withText("Пользователь заблокирован")).shouldBe(Condition.visible);
     }
 
     @Test
-    void shouldIncorrectLogin() {
-        DataGenerator.setIncorrectLogin();
-        $("[data-test-id=login] [class = input__control]").setValue(faker.name().fullName());
-        $("[data-test-id=password] [class = input__control]").setValue(user.getPassword());
-        $(byText("Продолжить")).click();
-        $(withText("Ошибка")).shouldBe(Condition.visible, Duration.ofSeconds(5));
+    void shouldLoginFunctionInvalidLogin() {
+        User dataOrderCard= DataGenerator.Registration.generateActiveUser();
+        DataGenerator.SendOnServer.setUpAll(dataOrderCard);
+        $("[name=login]").setValue("anastasia");
+        $("[name=password]").setValue(dataOrderCard.getPassword());
+        $("[data-test-id=action-login]").click();
+        $(withText("Неверно указан логин")).shouldBe(Condition.visible);
+    }
 
+    @Test
+    void shouldLoginFunctionInvalidPassword() {
+        User dataOrderCard= DataGenerator.Registration.generateActiveUser();
+        DataGenerator.SendOnServer.setUpAll(dataOrderCard);
+        $("[name=login]").setValue(dataOrderCard.getLogin());
+        $("[name=password]").setValue("12345");
+        $("[data-test-id=action-login]").click();
+        $(withText("Неверно указан логин или пароль")).shouldBe(Condition.visible);
     }
 }
